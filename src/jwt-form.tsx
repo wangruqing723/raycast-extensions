@@ -30,10 +30,7 @@ function formatJwtTimeInline(ts: number) {
     `${pad(date.getSeconds())}`;
 
   const now = Date.now();
-  let status = "active";
-
-  if (date.getTime() < now) status = "expired";
-  if (date.getTime() > now && time > now) status = "active";
+  const status = date.getTime() < now ? "expired" : "active";
 
   return `// ${formatted} · ${status}`;
 }
