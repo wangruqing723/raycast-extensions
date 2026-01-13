@@ -31,7 +31,7 @@
                 {
                     "name": "dash",
                     "type": "dropdown",
-                    "placeholder": "是否保留连字符",
+                    "placeholder": "默认保留连字符",
                     "optional": true,
                     "data": [
                         {
@@ -47,7 +47,7 @@
                 {
                     "name": "upper",
                     "type": "dropdown",
-                    "placeholder": "是否大写",
+                    "placeholder": "默认小写",
                     "optional": true,
                     "data": [
                         {
@@ -86,7 +86,7 @@
                 {
                     "name": "op",
                     "type": "dropdown",
-                    "placeholder": "-",
+                    "placeholder": "默认 Decode",
                     "data": [
                         {
                             "title": "Encode",
@@ -115,7 +115,7 @@
                 {
                     "name": "op",
                     "type": "dropdown",
-                    "placeholder": "-",
+                    "placeholder": "默认 Decode",
                     "data": [
                         {
                             "title": "Encode",
@@ -144,7 +144,7 @@
                 {
                     "name": "alg",
                     "type": "dropdown",
-                    "placeholder": "-",
+                    "placeholder": "默认 SHA256",
                     "data": [
                         {
                             "title": "SHA512",
