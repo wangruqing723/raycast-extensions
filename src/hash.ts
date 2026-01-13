@@ -1,7 +1,6 @@
 // src/hash.ts
 import crypto from "crypto";
 import { getInputText } from "./utils/input";
-import { ensureHashHex } from "./utils/guard";
 import { success, failure } from "./utils/result";
 
 export default async function Command(props: {

@@ -1,8 +1,3 @@
-// Raycast Extension: SM4 Encrypt/Decrypt + UUID Generator
-// Design goals: low memory, fast startup, low error rate
-// Tech choice: Tauri-style logic avoided; pure Raycast TS + native binaries
-
-
 import crypto from "crypto";
 import { success, failure } from "./utils/result";
 
@@ -29,7 +24,7 @@ export default async function Command(props: {
 
     await success(uuid, { title: "UUID 生成成功" });
   } catch (error: any) {
-    await failure(err, "生成 UUID 失败");
+    await failure(error, "生成 UUID 失败");
   }
 }
 

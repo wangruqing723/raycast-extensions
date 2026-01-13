@@ -1,5 +1,5 @@
 // src/jwt-form.tsx
-import { ActionPanel, Action, Detail, Form, showToast, Toast } from "@raycast/api";
+import { ActionPanel, Action, Detail, Form } from "@raycast/api";
 import { useState } from "react";
 import crypto from "crypto";
 import { success, failure } from "./utils/result";
@@ -112,9 +112,9 @@ export default function Command() {
         const payload = decodePart(parts[1]);
         const payloadStr = renderPayload(payload);
 
-        const exp = formatJwtTimeInline(payload.exp);
-        const iat = formatJwtTimeInline(payload.iat);
-        const nbf = formatJwtTimeInline(payload.nbf);
+        // const exp = formatJwtTimeInline(payload.exp);
+        // const iat = formatJwtTimeInline(payload.iat);
+        // const nbf = formatJwtTimeInline(payload.nbf);
 
         const markdown = `
 ## Header

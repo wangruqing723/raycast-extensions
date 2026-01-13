@@ -1,5 +1,5 @@
 // src/bcrypt-form.tsx
-import { Form, ActionPanel, Action, showToast, Toast } from "@raycast/api";
+import { Form, ActionPanel, Action } from "@raycast/api";
 import { useState } from "react";
 import bcrypt from "bcryptjs";
 import { ensureNumberInRange } from "./utils/guard";
