@@ -1,9 +1,7 @@
 import crypto from "crypto";
 import { success, failure } from "./utils/result";
 
-export default async function Command(props: {
-  arguments: { dash?: string; upper?: string };
-}) {
+export default async function Command(props: { arguments: { dash?: string; upper?: string } }) {
   try {
     const { dash, upper } = props.arguments;
 
@@ -23,8 +21,7 @@ export default async function Command(props: {
     }
 
     await success(uuid, { title: "UUID 生成成功" });
-  } catch (error: any) {
+  } catch (error) {
     await failure(error, "生成 UUID 失败");
   }
 }
-

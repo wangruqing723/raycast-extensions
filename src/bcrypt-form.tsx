@@ -23,12 +23,7 @@ export default function Command() {
       }
 
       if (values.mode === "hash") {
-        const saltRounds = ensureNumberInRange(
-          Number(values.salt || 12),
-          4,
-          31,
-          "Salt 位数"
-        );
+        const saltRounds = ensureNumberInRange(Number(values.salt || 12), 4, 31, "Salt 位数");
 
         const hash = await bcrypt.hash(values.text, saltRounds);
 
@@ -46,7 +41,7 @@ export default function Command() {
       } else {
         await failure("校验不通过", "校验结果");
       }
-    } catch (err: any) {
+    } catch (err) {
       await failure(err, "校验失败");
     }
   }
@@ -59,21 +54,16 @@ export default function Command() {
         </ActionPanel>
       }
     >
+      <Form.TextArea id="text" title="Text" placeholder="明文" />
 
-    <Form.TextArea id="text" title="Text" placeholder="明文" />
+      <Form.Dropdown id="mode" title="Mode" value={mode} onChange={(v) => setMode(v as Mode)}>
+        <Form.Dropdown.Item value="hash" title="Hash" />
+        <Form.Dropdown.Item value="verify" title="Verify" />
+      </Form.Dropdown>
 
-    <Form.Dropdown id="mode" title="Mode" value={mode} onChange={(v) => setMode(v as Mode)}>
-      <Form.Dropdown.Item value="hash" title="Hash" />
-      <Form.Dropdown.Item value="verify" title="Verify" />
-    </Form.Dropdown>
+      {mode === "hash" && <Form.TextField id="salt" title="Salt Rounds" defaultValue="12" />}
 
-    {mode === "hash" && (
-      <Form.TextField id="salt" title="Salt Rounds" defaultValue="12" />
-    )}
-
-    {mode === "verify" && (
-      <Form.TextArea id="hash" title="Hash" placeholder="待校验的 Hash" />
-    )}
+      {mode === "verify" && <Form.TextArea id="hash" title="Hash" placeholder="待校验的 Hash" />}
     </Form>
   );
 }

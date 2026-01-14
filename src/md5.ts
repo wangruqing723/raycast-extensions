@@ -3,9 +3,7 @@ import crypto from "crypto";
 import { getInputText } from "./utils/input";
 import { success, failure } from "./utils/result";
 
-export default async function Command(props: {
-  arguments: { text?: string };
-}) {
+export default async function Command(props: { arguments: { text?: string } }) {
   try {
     const text = await getInputText(props.arguments.text);
     const hash = crypto.createHash("md5").update(text).digest("hex");
