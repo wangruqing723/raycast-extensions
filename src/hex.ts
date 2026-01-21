@@ -3,14 +3,12 @@ import { getInputText } from "./utils/input";
 import { ensureHex } from "./utils/guard";
 import { success, failure } from "./utils/result";
 
-export default async function Command(props: {
-  arguments: { op?: string; text?: string };
-}) {
+export default async function Command(props: { arguments: { op?: string; text?: string } }) {
   try {
     const text = await getInputText(props.arguments.text);
     let op = "decode";
     if (props.arguments.op) {
-      op = props.arguments.op
+      op = props.arguments.op;
     }
 
     const result =

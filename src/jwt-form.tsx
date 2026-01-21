@@ -15,7 +15,7 @@ function formatJwtTimeInline(ts: number) {
 
   const time = ts;
   if (time.toString().length <= 10) {
-    ts = ts  * 1000
+    ts = ts * 1000;
   }
   const date = new Date(ts);
 
@@ -46,7 +46,7 @@ function formatJwtTimeInline(ts: number) {
 //   return `//(${date.toISOString()} · ${status})`;
 // }
 
-function renderPayload(payload: Record<string, any>) {
+function renderPayload(payload: Record<string, unknown>) {
   const lines: string[] = ["{"];
 
   const keys = Object.keys(payload);
@@ -69,16 +69,11 @@ function renderPayload(payload: Record<string, any>) {
   return lines.join("\n");
 }
 
-function signHS256(header: any, payload: any, secret: string) {
-  const b64 = (v: any) =>
-    Buffer.from(JSON.stringify(v))
-      .toString("base64url");
+function signHS256(header: unknown, payload: unknown, secret: string) {
+  const b64 = (v: unknown) => Buffer.from(JSON.stringify(v)).toString("base64url");
 
   const data = `${b64(header)}.${b64(payload)}`;
-  const sig = crypto
-    .createHmac("sha256", secret)
-    .update(data)
-    .digest("base64url");
+  const sig = crypto.createHmac("sha256", secret).update(data).digest("base64url");
 
   return `${data}.${sig}`;
 }
@@ -100,7 +95,7 @@ export default function Command() {
     );
   }
 
-  async function onSubmit(values: any) {
+  async function onSubmit(values: unknown) {
     try {
       if (mode === "parse") {
         const parts = values.token.split(".");
@@ -144,9 +139,9 @@ ${parts[2]}
       const token = signHS256(header, payload, secret);
 
       setDetail(`## JWT Generated\n\`\`\`\n${token}\n\`\`\``);
-      
+
       await success(token, { title: "JWT Generated 成功并已复制到剪贴板" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       await failure(err, `JWT${mode === "parse" ? "解析" : "生成"}失败`);
     }
   }
@@ -159,36 +154,17 @@ ${parts[2]}
         </ActionPanel>
       }
     >
-      <Form.Dropdown
-        id="mode"
-        title="Mode"
-        value={mode}
-        onChange={(v) => setMode(v as Mode)}
-      >
+      <Form.Dropdown id="mode" title="Mode" value={mode} onChange={(v) => setMode(v as Mode)}>
         <Form.Dropdown.Item value="parse" title="Parse" />
         <Form.Dropdown.Item value="generate" title="Generate (HS256)" />
       </Form.Dropdown>
 
-      {mode === "parse" && (
-        <Form.TextArea
-          id="token"
-          title="JWT Token"
-          placeholder="Header.Payload.Signature"
-        />
-      )}
+      {mode === "parse" && <Form.TextArea id="token" title="JWT Token" placeholder="Header.Payload.Signature" />}
 
       {mode === "generate" && (
         <>
-          <Form.TextArea
-            id="payload"
-            title="Payload (JSON)"
-            placeholder='{"sub":"123","exp":1710000000}'
-          />
-          <Form.TextField
-            id="secret"
-            title="Secret"
-            placeholder="HS256 secret"
-          />
+          <Form.TextArea id="payload" title="Payload (JSON)" placeholder='{"sub":"123","exp":1710000000}' />
+          <Form.TextField id="secret" title="Secret" placeholder="HS256 secret" />
         </>
       )}
     </Form>

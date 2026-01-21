@@ -11,12 +11,7 @@ type DiffLine = {
   right?: string;
 };
 
-function diffLines(
-  left: string,
-  right: string,
-  ignoreCase: boolean,
-  ignoreEmpty: boolean
-): DiffLine[] {
+function diffLines(left: string, right: string, ignoreCase: boolean, ignoreEmpty: boolean): DiffLine[] {
   let a = left.split("\n");
   let b = right.split("\n");
 
@@ -108,12 +103,7 @@ export default function Command() {
           <Action.SubmitForm
             title="Compare"
             onSubmit={(values) => {
-              const diff = diffLines(
-                values.left,
-                values.right,
-                values.ignoreCase,
-                values.ignoreEmpty
-              );
+              const diff = diffLines(values.left, values.right, values.ignoreCase, values.ignoreEmpty);
               setMarkdown(renderMarkdown(diff));
             }}
           />
@@ -123,16 +113,8 @@ export default function Command() {
       <Form.TextArea id="left" title="Text A" />
       <Form.TextArea id="right" title="Text B" />
 
-      <Form.Checkbox
-        id="ignoreCase"
-        label="Ignore Case"
-        defaultValue={false}
-      />
-      <Form.Checkbox
-        id="ignoreEmpty"
-        label="Ignore Empty Lines"
-        defaultValue={true}
-      />
+      <Form.Checkbox id="ignoreCase" label="Ignore Case" defaultValue={false} />
+      <Form.Checkbox id="ignoreEmpty" label="Ignore Empty Lines" defaultValue={true} />
     </Form>
   );
 }

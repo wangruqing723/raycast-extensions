@@ -34,9 +34,7 @@ export default function SM4FormCommand() {
   const [keyHistory, setKeyHistory] = useState<Sm4KeyHistory[]>([]);
   const [keySelect, setKeySelect] = useState("__manual__");
   // 输出格式，根据 action 默认
-  const [format, setFormat] = useState<"hex" | "base64" | "utf8">(
-    action === "encrypt" ? "hex" : "utf8"
-  );
+  const [format, setFormat] = useState<"hex" | "base64" | "utf8">(action === "encrypt" ? "hex" : "utf8");
 
   // 只在组件初始化时加载 key 历史
   useEffect(() => {
@@ -47,20 +45,17 @@ export default function SM4FormCommand() {
     setFormat(action === "encrypt" ? "hex" : "utf8");
   }, [action]);
 
-  async function handleSubmit(values: any) {
+  async function handleSubmit(values: unknown) {
     try {
       const { text, iv } = values;
 
-      const key =
-        values.keySelect === "__manual__"
-          ? values.keyInput
-          : values.keySelect;
+      const key = values.keySelect === "__manual__" ? values.keyInput : values.keySelect;
 
       if (!text) throw new Error("请输入要加/解密的文本");
       if (!key || key.length !== 32) throw new Error("请输入有效的 32 字符 Hex 密钥");
 
       const cipherIs = detectEncoding(text);
-      const opts: any = {
+      const opts: unknown = {
         mode,
         iv: iv || undefined,
         inputEncoding: "utf8",
@@ -85,11 +80,11 @@ export default function SM4FormCommand() {
 
       await addKeyToHistory(key);
       setKeyHistory(await loadKeyHistory());
-    } catch (err: any) {
+    } catch (err) {
       await failure(err, `${action === "encrypt" ? "加密" : "解密"}失败`);
     }
   }
-  
+
   function detectEncoding(str: string): "hex" | "base64" | "utf8" {
     const hexRegex = /^[0-9a-fA-F]+$/;
     const base64Regex = /^[A-Za-z0-9+/]+=*$/;
@@ -101,11 +96,7 @@ export default function SM4FormCommand() {
 
     // 2) 再判断 base64
     //    且长度必须是 base64 的整倍数
-    if (
-      base64Regex.test(str) &&
-      str.length % 4 === 0 &&
-      !/[^A-Za-z0-9+/=]/.test(str)
-    ) {
+    if (base64Regex.test(str) && str.length % 4 === 0 && !/[^A-Za-z0-9+/=]/.test(str)) {
       try {
         // 进一步尝试 decode 看能不能成功
         Buffer.from(str, "base64");
@@ -159,12 +150,7 @@ export default function SM4FormCommand() {
       <Form.TextArea id="text" title="文本（明文/密文）" placeholder="输入需要处理的内容" />
 
       {/* SM4 Key History */}
-      <Form.Dropdown
-        id="keySelect"
-        title="SM4 密钥历史"
-        value={keySelect}
-        onChange={setKeySelect}
-      >
+      <Form.Dropdown id="keySelect" title="SM4 密钥历史" value={keySelect} onChange={setKeySelect}>
         <Form.Dropdown.Item value="__manual__" title="手动输入" />
         {keyHistory.map((k) => (
           <Form.Dropdown.Item
@@ -177,37 +163,29 @@ export default function SM4FormCommand() {
 
       {/* SM4 Key Input */}
       {keySelect === "__manual__" && (
-        <Form.TextField
-          id="keyInput"
-          title="SM4 密钥（32位 Hex）"
-          placeholder="0123456789abcdeffedcba9876543210"
-        />
+        <Form.TextField id="keyInput" title="SM4 密钥（32位 Hex）" placeholder="0123456789abcdeffedcba9876543210" />
       )}
 
       {/* 操作 Dropdown */}
-      <Form.Dropdown id="action" title="操作" value={action} onChange={(v) => setAction(v as any)}>
+      <Form.Dropdown id="action" title="操作" value={action} onChange={(v) => setAction(v as unknown)}>
         <Form.Dropdown.Item value="encrypt" title="加密" />
         <Form.Dropdown.Item value="decrypt" title="解密" />
       </Form.Dropdown>
 
       {/* 模式 Dropdown */}
-      <Form.Dropdown id="mode" title="模式" value={mode} onChange={(v) => setMode(v as any)}>
+      <Form.Dropdown id="mode" title="模式" value={mode} onChange={(v) => setMode(v as unknown)}>
         <Form.Dropdown.Item value="ECB" title="ECB（默认）" />
         <Form.Dropdown.Item value="CBC" title="CBC（需 IV）" />
       </Form.Dropdown>
 
       {/* IV 仅在 CBC 时展示 */}
-      {mode === "CBC" && (
-        <Form.TextField id="iv" title="IV（32 个 Hex）" placeholder="CBC 模式下需要 IV" />
-      )}
+      {mode === "CBC" && <Form.TextField id="iv" title="IV（32 个 Hex）" placeholder="CBC 模式下需要 IV" />}
 
       {/* 输出格式 Dropdown（受控） */}
       <Form.Dropdown id="format" title="输出格式" value={format} onChange={setFormat}>
         <Form.Dropdown.Item value="hex" title="Hex" />
         <Form.Dropdown.Item value="base64" title="Base64" />
-        {action === "decrypt" && (
-          <Form.Dropdown.Item value="utf8" title="UTF‑8（文本）"/>
-        )}
+        {action === "decrypt" && <Form.Dropdown.Item value="utf8" title="UTF‑8（文本）" />}
       </Form.Dropdown>
     </Form>
   );
