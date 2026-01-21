@@ -20,7 +20,7 @@ export default async function Command(props: { arguments: { dash?: string; upper
       uuid = uuid.toUpperCase();
     }
 
-    await success(uuid, { title: "UUID 生成成功" });
+    await success(uuid, { title: "UUID 成功", hud: true });
   } catch (error) {
     await failure(error, "生成 UUID 失败");
   }

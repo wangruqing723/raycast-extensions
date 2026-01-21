@@ -16,7 +16,7 @@ export default async function Command(props: { arguments: { op?: string; text?: 
         ? Buffer.from(text, "utf8").toString("hex")
         : Buffer.from(ensureHex(text), "hex").toString("utf8");
 
-    await success(result, { title: `Hex ${op === "decode" ? "Decode" : "Encode"} 成功` });
+    await success(result, { title: `Hex ${op === "decode" ? "Decode" : "Encode"} 成功`, hud: true });
   } catch (err) {
     await failure(err, "Hex 失败");
   }

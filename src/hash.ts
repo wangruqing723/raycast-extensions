@@ -13,7 +13,7 @@ export default async function Command(props: { arguments: { alg?: string; text?:
 
     const hash = crypto.createHash(alg).update(text).digest("hex");
 
-    await success(hash, { title: `Hash-${alg} 成功` });
+    await success(hash, { title: `Hash-${alg} 成功`, hud: true });
   } catch (err) {
     await failure(err, "Hash 失败");
   }

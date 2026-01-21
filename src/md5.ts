@@ -8,7 +8,7 @@ export default async function Command(props: { arguments: { text?: string } }) {
     const text = await getInputText(props.arguments.text);
     const hash = crypto.createHash("md5").update(text).digest("hex");
 
-    await success(hash, { title: "MD5 生成成功" });
+    await success(hash, { title: "MD5 成功", hud: true });
   } catch (err) {
     await failure(err, "MD5 失败");
   }

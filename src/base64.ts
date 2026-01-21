@@ -16,7 +16,7 @@ export default async function Command(props: { arguments: { op?: string; text?: 
         ? Buffer.from(text, "utf8").toString("base64")
         : Buffer.from(ensureBase64(text), "base64").toString("utf8");
 
-    await success(result, { title: `Base64 ${op === "decode" ? "Decode" : "Encode"} 成功` });
+    await success(result, { title: `Base64 ${op === "decode" ? "Decode" : "Encode"} 成功`, hud: true });
   } catch (err) {
     await failure(err, "Base64 失败");
   }
