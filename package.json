@@ -115,6 +115,21 @@
             ]
         },
         {
+            "name": "hexadecimal",
+            "title": "hexadecimal",
+            "subtitle": "十六进制 编解码",
+            "description": "十六进制 编码和解码工具",
+            "mode": "no-view",
+            "arguments":
+            [
+                {
+                    "name": "text",
+                    "type": "text",
+                    "placeholder": "输入文本或十六进制文本"
+                }
+            ]
+        },
+        {
             "name": "hex",
             "title": "Hex",
             "subtitle": "Hex 编解码",
