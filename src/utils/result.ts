@@ -32,10 +32,10 @@ export async function failure(err: unknown, title = "失败") {
   // if (options.hud) {
   //   await showHUD(result);
   // } else {
-    await showToast({
-      title,
-      message,
-      style: Toast.Style.Failure,
-    });
+  await showToast({
+    title,
+    message,
+    style: Toast.Style.Failure,
+  });
   // }
 }
