@@ -117,7 +117,7 @@
         },
         {
             "name": "hexadecimal",
-            "title": "hexadecimal",
+            "title": "Hexadecimal",
             "subtitle": "十六进制 编解码",
             "description": "十六进制 编码和解码工具",
             "mode": "no-view",
