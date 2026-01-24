@@ -42,11 +42,11 @@
                     [
                         {
                             "title": "去掉 -",
-                            "value": "true"
+                            "value": "false"
                         },
                         {
                             "title": "保留 -",
-                            "value": "false"
+                            "value": "true"
                         }
                     ]
                 },
@@ -59,11 +59,11 @@
                     [
                         {
                             "title": "大写",
-                            "value": "true"
+                            "value": "false"
                         },
                         {
                             "title": "小写",
-                            "value": "false"
+                            "value": "true"
                         }
                     ]
                 }

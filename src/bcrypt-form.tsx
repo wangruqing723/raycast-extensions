@@ -11,6 +11,7 @@ type Values = {
   text: string;
   salt?: string;
   hash?: string;
+  mode?: Mode;
 };
 
 export default function Command() {

@@ -95,10 +95,10 @@ export default function Command() {
     );
   }
 
-  async function onSubmit(values: unknown) {
+  async function onSubmit(values: { token?: string; payload?: string; secret?: string; mode?: Mode }) {
     try {
       if (mode === "parse") {
-        const parts = values.token.split(".");
+        const parts = (values.token || "").split(".");
         if (parts.length !== 3) {
           throw new Error("非法 JWT");
         }
@@ -132,8 +132,8 @@ ${parts[2]}
       }
 
       // generate
-      const payload = JSON.parse(values.payload);
-      const secret = values.secret;
+      const payload = JSON.parse(values.payload || "{}");
+      const secret = values.secret || "";
 
       const header = { alg: "HS256", typ: "JWT" };
       const token = signHS256(header, payload, secret);

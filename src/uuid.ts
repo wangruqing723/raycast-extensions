@@ -5,15 +5,14 @@ export default async function Command(props: { arguments: { dash?: string; upper
   try {
     const { dash, upper } = props.arguments;
 
-    // 只有在用户选了的时候才转换为 bool
-    const keepDash = dash !== undefined ? dash === "true" : true;
-    // const keepDash = dash ?? false;
-    const toUpper = upper !== undefined ? upper === "true" : false;
-    // const toUpper = upper ?? false;
+    // 将字符串参数转换为布尔值
+    // 默认：dash 为 true （保留连接符）， upper 为 true （小写）
+    const delDash = dash !== undefined && dash !== "" && dash !== "true";
+    const toUpper = upper !== undefined && upper !== "" && upper !== "true";
 
-    let uuid = crypto.randomUUID();
+    let uuid: string = crypto.randomUUID();
 
-    if (keepDash) {
+    if (delDash) {
       uuid = uuid.replace(/-/g, "");
     }
     if (toUpper) {

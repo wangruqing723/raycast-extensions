@@ -1,5 +1,24 @@
 import { Form, ActionPanel, Action, LocalStorage, confirmAlert, Alert } from "@raycast/api";
 import { useState, useEffect } from "react";
+
+type Sm4KeyHistory = { value: string; lastUsedAt: number };
+type SM4FormValues = {
+  text?: string;
+  iv?: string;
+  keySelect?: string;
+  keyInput?: string;
+  action?: "encrypt" | "decrypt";
+  mode?: "ECB" | "CBC";
+  format?: "hex" | "base64" | "utf8";
+};
+
+type SM4Options = {
+  mode: "ECB" | "CBC";
+  iv?: string;
+  inputEncoding: "utf8" | "hex" | "base64";
+  outputEncoding: "utf8" | "hex" | "base64";
+};
+type SM4EncryptParam = Parameters<typeof SM4.encrypt>[2];
 import { SM4 } from "gm-crypto";
 import { success, failure } from "./utils/result";
 
@@ -45,7 +64,7 @@ export default function SM4FormCommand() {
     setFormat(action === "encrypt" ? "hex" : "utf8");
   }, [action]);
 
-  async function handleSubmit(values: unknown) {
+  async function handleSubmit(values: SM4FormValues) {
     try {
       const { text, iv } = values;
 
@@ -55,7 +74,7 @@ export default function SM4FormCommand() {
       if (!key || key.length !== 32) throw new Error("请输入有效的 32 字符 Hex 密钥");
 
       const cipherIs = detectEncoding(text);
-      const opts: unknown = {
+      const opts: SM4Options = {
         mode,
         iv: iv || undefined,
         inputEncoding: "utf8",
@@ -67,13 +86,13 @@ export default function SM4FormCommand() {
         if (opts.outputEncoding === "utf8") {
           throw new Error("加密操作时输出格式不能为UTF-8");
         }
-        result = SM4.encrypt(text, key, opts);
+        result = SM4.encrypt(text, key, opts as unknown as SM4EncryptParam) as unknown as string;
       } else {
         if (cipherIs !== "hex" && cipherIs !== "base64") {
           throw new Error("输入看起来不像合法密文（hex 或 base64）");
         }
         opts.inputEncoding = cipherIs === "hex" ? "hex" : cipherIs === "base64" ? "base64" : "utf8";
-        result = SM4.decrypt(text, key, opts);
+        result = SM4.decrypt(text, key, opts as unknown as SM4EncryptParam) as unknown as string;
       }
 
       await success(result, { title: `${action === "encrypt" ? "加密" : "解密"}成功` });
@@ -167,13 +186,13 @@ export default function SM4FormCommand() {
       )}
 
       {/* 操作 Dropdown */}
-      <Form.Dropdown id="action" title="操作" value={action} onChange={(v) => setAction(v as unknown)}>
+      <Form.Dropdown id="action" title="操作" value={action} onChange={(v) => setAction(v as "encrypt" | "decrypt")}>
         <Form.Dropdown.Item value="encrypt" title="加密" />
         <Form.Dropdown.Item value="decrypt" title="解密" />
       </Form.Dropdown>
 
       {/* 模式 Dropdown */}
-      <Form.Dropdown id="mode" title="模式" value={mode} onChange={(v) => setMode(v as unknown)}>
+      <Form.Dropdown id="mode" title="模式" value={mode} onChange={(v) => setMode(v as "ECB" | "CBC")}>
         <Form.Dropdown.Item value="ECB" title="ECB（默认）" />
         <Form.Dropdown.Item value="CBC" title="CBC（需 IV）" />
       </Form.Dropdown>
@@ -182,7 +201,12 @@ export default function SM4FormCommand() {
       {mode === "CBC" && <Form.TextField id="iv" title="IV（32 个 Hex）" placeholder="CBC 模式下需要 IV" />}
 
       {/* 输出格式 Dropdown（受控） */}
-      <Form.Dropdown id="format" title="输出格式" value={format} onChange={setFormat}>
+      <Form.Dropdown
+        id="format"
+        title="输出格式"
+        value={format}
+        onChange={(v) => setFormat(v as "hex" | "base64" | "utf8")}
+      >
         <Form.Dropdown.Item value="hex" title="Hex" />
         <Form.Dropdown.Item value="base64" title="Base64" />
         {action === "decrypt" && <Form.Dropdown.Item value="utf8" title="UTF‑8（文本）" />}
