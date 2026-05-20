@@ -70,32 +70,26 @@ export default function UnicodeCommand() {
     );
   }
 
-  // 解码模式：显示 Unicode 编码对应的中文和详细信息
-  if (result?.mode === "decode" && result.analysis) {
-    const { originalText, codePoints } = result.analysis;
-
+  // 解码模式：显示 Unicode 编码翻译的中文
+  if (result?.mode === "decode" && result.decodedText) {
     return (
       <List searchBarPlaceholder="Enter text or Unicode code..." onSearchTextChange={setSearchText} filtering={false}>
-        <List.Section title={`Decode: ${originalText} (${originalText.length} chars)`}>
-          {codePoints.map((cp) => (
-            <List.Item
-              key={`${cp.char}-${cp.hex}`}
-              title={`${cp.char}`}
-              subtitle={`Hex: ${cp.hex} | Decimal: ${cp.decimal} | JS: \\u${cp.hex}`}
-              actions={
-                <ActionPanel>
-                  <Action.CopyToClipboard content={cp.char} title="Copy Character" />
-                  <Action.CopyToClipboard content={cp.hex} title="Copy Hex" />
-                </ActionPanel>
-              }
-            />
-          ))}
+        <List.Section title={`Decode: ${result.decodedText}`}>
+          <List.Item
+            title={result.decodedText}
+            subtitle={`${result.decodedText.length} character${result.decodedText.length !== 1 ? "s" : ""}`}
+            actions={
+              <ActionPanel>
+                <Action.CopyToClipboard content={result.decodedText} title="Copy" />
+              </ActionPanel>
+            }
+          />
         </List.Section>
       </List>
     );
   }
 
-  // 搜索框为空或加载中
+  // 搜索框为空
   return (
     <List searchBarPlaceholder="Enter text or Unicode code..." onSearchTextChange={setSearchText} filtering={false} />
   );
