@@ -45,8 +45,8 @@ export default function UnicodeCommand() {
   if (result?.mode === "encode" && result.analysis) {
     const { originalText, hex, javascript, unicode } = result.analysis;
     const formats = [
-      { label: "Hexadecimal (Hex)", value: hex },
       { label: "JavaScript (\\uXXXX)", value: javascript },
+      { label: "Hexadecimal (Hex)", value: hex },
       { label: "Unicode Standard (U+XXXX)", value: unicode },
     ];
 
