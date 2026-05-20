@@ -1,0 +1,8 @@
+node_modules
+.ray
+dist
+build
+*.log
+.DS_Store
+.env
+.env.local
