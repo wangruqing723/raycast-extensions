@@ -1,5 +1,8 @@
 import { Form, ActionPanel, Action, LocalStorage, confirmAlert, Alert } from "@raycast/api";
 import { useState, useEffect } from "react";
+import { SM4 } from "gm-crypto";
+import { success, failure } from "./utils/result";
+import type { SM4EncryptOptions } from "./types/sm4";
 
 type Sm4KeyHistory = { value: string; lastUsedAt: number };
 type SM4FormValues = {
@@ -11,16 +14,6 @@ type SM4FormValues = {
   mode?: "ECB" | "CBC";
   format?: "hex" | "base64" | "utf8";
 };
-
-type SM4Options = {
-  mode: "ECB" | "CBC";
-  iv?: string;
-  inputEncoding: "utf8" | "hex" | "base64";
-  outputEncoding: "utf8" | "hex" | "base64";
-};
-type SM4EncryptParam = Parameters<typeof SM4.encrypt>[2];
-import { SM4 } from "gm-crypto";
-import { success, failure } from "./utils/result";
 
 const KEY_HISTORY_STORAGE = "sm4-key-history";
 
@@ -47,19 +40,40 @@ async function deleteKey(key: string) {
   await saveKeyHistory(list.filter((k) => k.value !== key));
 }
 
+function detectEncoding(str: string): "hex" | "base64" | "utf8" {
+  const hexRegex = /^[0-9a-fA-F]+$/;
+  const base64Regex = /^[A-Za-z0-9+/]+=*$/;
+
+  // 1) 先判断 hex
+  if (hexRegex.test(str) && str.length % 2 === 0) {
+    return "hex";
+  }
+
+  // 2) 再判断 base64
+  if (base64Regex.test(str) && str.length % 4 === 0 && !/[^A-Za-z0-9+/=]/.test(str)) {
+    try {
+      Buffer.from(str, "base64");
+      return "base64";
+    } catch {
+      // 如果解码失败，就不是 base64
+    }
+  }
+
+  // 3) 否则就是 utf8
+  return "utf8";
+}
+
 export default function SM4FormCommand() {
   const [mode, setMode] = useState<"ECB" | "CBC">("ECB");
   const [action, setAction] = useState<"encrypt" | "decrypt">("encrypt");
   const [keyHistory, setKeyHistory] = useState<Sm4KeyHistory[]>([]);
   const [keySelect, setKeySelect] = useState("__manual__");
-  // 输出格式，根据 action 默认
   const [format, setFormat] = useState<"hex" | "base64" | "utf8">(action === "encrypt" ? "hex" : "utf8");
 
-  // 只在组件初始化时加载 key 历史
   useEffect(() => {
     loadKeyHistory().then(setKeyHistory);
   }, []);
-  // 当 action 改变时，同步调整默认输出格式
+
   useEffect(() => {
     setFormat(action === "encrypt" ? "hex" : "utf8");
   }, [action]);
@@ -74,7 +88,7 @@ export default function SM4FormCommand() {
       if (!key || key.length !== 32) throw new Error("请输入有效的 32 字符 Hex 密钥");
 
       const cipherIs = detectEncoding(text);
-      const opts: SM4Options = {
+      const opts: SM4EncryptOptions = {
         mode,
         iv: iv || undefined,
         inputEncoding: "utf8",
@@ -86,13 +100,16 @@ export default function SM4FormCommand() {
         if (opts.outputEncoding === "utf8") {
           throw new Error("加密操作时输出格式不能为UTF-8");
         }
-        result = SM4.encrypt(text, key, opts as unknown as SM4EncryptParam) as unknown as string;
+        // gm-crypto 的 SM4 类型定义不完全，这里使用 any 来适配
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        result = SM4.encrypt(text, key, opts as any);
       } else {
         if (cipherIs !== "hex" && cipherIs !== "base64") {
           throw new Error("输入看起来不像合法密文（hex 或 base64）");
         }
         opts.inputEncoding = cipherIs === "hex" ? "hex" : cipherIs === "base64" ? "base64" : "utf8";
-        result = SM4.decrypt(text, key, opts as unknown as SM4EncryptParam) as unknown as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        result = SM4.decrypt(text, key, opts as any);
       }
 
       await success(result, { title: `${action === "encrypt" ? "加密" : "解密"}成功` });
@@ -102,31 +119,6 @@ export default function SM4FormCommand() {
     } catch (err) {
       await failure(err, `${action === "encrypt" ? "加密" : "解密"}失败`);
     }
-  }
-
-  function detectEncoding(str: string): "hex" | "base64" | "utf8" {
-    const hexRegex = /^[0-9a-fA-F]+$/;
-    const base64Regex = /^[A-Za-z0-9+/]+=*$/;
-
-    // 1) 先判断 hex
-    if (hexRegex.test(str) && str.length % 2 === 0) {
-      return "hex";
-    }
-
-    // 2) 再判断 base64
-    //    且长度必须是 base64 的整倍数
-    if (base64Regex.test(str) && str.length % 4 === 0 && !/[^A-Za-z0-9+/=]/.test(str)) {
-      try {
-        // 进一步尝试 decode 看能不能成功
-        Buffer.from(str, "base64");
-        return "base64";
-      } catch {
-        // 如果解码失败，就不是 base64
-      }
-    }
-
-    // 3) 否则就是 utf8
-    return "utf8";
   }
 
   return (
@@ -149,7 +141,6 @@ export default function SM4FormCommand() {
                     title: "删除",
                     style: Alert.ActionStyle.Destructive,
                   },
-                  // secondaryCancelAction: { title: "取消" } // 默认就有取消
                 });
 
                 if (!confirmed) {

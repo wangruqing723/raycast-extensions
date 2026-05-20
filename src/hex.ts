@@ -13,8 +13,8 @@ export default async function Command(props: { arguments: { op?: string; text?: 
 
     const result =
       op === "decode"
-      ? Buffer.from(ensureHex(text), "hex").toString("utf8")
-      : Buffer.from(text, "utf8").toString("hex");
+        ? Buffer.from(ensureHex(text), "hex").toString("utf8")
+        : Buffer.from(text, "utf8").toString("hex");
 
     await success(result, { title: `Hex ${op === "decode" ? "Decode" : "Encode"} 成功`, hud: true });
   } catch (err) {

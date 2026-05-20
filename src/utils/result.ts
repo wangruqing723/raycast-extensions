@@ -28,14 +28,9 @@ export async function success(result: string, options: SuccessOptions = {}) {
 
 export async function failure(err: unknown, title = "失败") {
   const message = err instanceof Error ? err.message : String(err ?? "未知错误");
-
-  // if (options.hud) {
-  //   await showHUD(result);
-  // } else {
   await showToast({
     title,
     message,
     style: Toast.Style.Failure,
   });
-  // }
 }

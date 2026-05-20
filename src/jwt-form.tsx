@@ -14,10 +14,8 @@ function formatJwtTimeInline(ts: number) {
   if (!ts) return;
 
   const time = ts;
-  if (time.toString().length <= 10) {
-    ts = ts * 1000;
-  }
-  const date = new Date(ts);
+  const tsMs = time.toString().length <= 10 ? ts * 1000 : ts;
+  const date = new Date(tsMs);
 
   const pad = (n: number) => n.toString().padStart(2, "0");
 
@@ -34,17 +32,6 @@ function formatJwtTimeInline(ts: number) {
 
   return `// ${formatted} · ${status}`;
 }
-
-// function formatJwtTimeInline(ts: number) {
-//   const date = new Date(ts * 1000);
-//   const now = Date.now();
-
-//   let status = "active";
-//   if (date.getTime() < now) status = "expired";
-//   if (date.getTime() > now) status = "not yet valid";
-
-//   return `//(${date.toISOString()} · ${status})`;
-// }
 
 function renderPayload(payload: Record<string, unknown>) {
   const lines: string[] = ["{"];
@@ -106,10 +93,6 @@ export default function Command() {
         const header = decodePart(parts[0]);
         const payload = decodePart(parts[1]);
         const payloadStr = renderPayload(payload);
-
-        // const exp = formatJwtTimeInline(payload.exp);
-        // const iat = formatJwtTimeInline(payload.iat);
-        // const nbf = formatJwtTimeInline(payload.nbf);
 
         const markdown = `
 ## Header
