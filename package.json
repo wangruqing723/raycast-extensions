@@ -211,6 +211,13 @@
             "mode": "view"
         },
         {
+            "name": "unicode-form",
+            "title": "Unicode",
+            "subtitle": "Unicode 编码转换",
+            "description": "Unicode 编码转换工具，支持多种格式展示（JavaScript、Unicode 标准、十进制、十六进制等）",
+            "mode": "view"
+        },
+        {
             "name": "textdiff-form",
             "title": "文本对比",
             "subtitle": "文本对比",
